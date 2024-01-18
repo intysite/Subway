@@ -11,4 +11,8 @@ public class Line {
         this.color = color;
         this.subway = subway;
     }
+
+    public String getColor() {
+        return color;
+    }
 }
