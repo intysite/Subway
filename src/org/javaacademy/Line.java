@@ -15,4 +15,8 @@ public class Line {
     public String getColor() {
         return color;
     }
+
+    public LinkedHashSet<Station> getStations() {
+        return stations;
+    }
 }
