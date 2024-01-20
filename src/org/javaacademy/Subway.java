@@ -1,22 +1,31 @@
 package org.javaacademy;
 
+import java.time.Duration;
 import java.util.HashSet;
 
 public class Subway {
-    private String city;
+    private final String city;
     private final HashSet<Line> lines = new HashSet<>();
 
     public Subway(String city) {
         this.city = city;
     }
 
-    public Line createNewLine(String color) throws DuplicateColorException {
+    public String getCity() {
+        return city;
+    }
+
+    public HashSet<Line> getLines() {
+        return lines;
+    }
+
+    public Line createNewLine(String color) throws DuplicateLineColorException {
         if (isColorUnique(color)) {
             Line line = new Line(color, this);
             lines.add(line);
             return line;
         } else {
-            throw new DuplicateColorException("Линия с цветом " + color + " уже существует.");
+            throw new DuplicateLineColorException("Линия с цветом " + color + " уже существует.");
         }
     }
 
@@ -25,14 +34,22 @@ public class Subway {
                 .noneMatch(line -> line.getColor().equals(color));
     }
 
-    public Station createFirstStation(String color, String nameOfStation) throws FailedCreateStationException {
+    public Station createFirstStation(String lineColor, String nameOfStation) throws FailedCreateStationException {
         if(!isNameOfStationUnique(nameOfStation)
-            && isContainLineDesiredColor(color)
-            && isLineEmpty(color)) {
+            && isContainLineDesiredColor(lineColor)
+            && isLineEmpty(lineColor)) {
                 return new Station(nameOfStation);
         } else {
             throw new FailedCreateStationException("Не удалось создать станцию " + nameOfStation);
         }
+    }
+
+    public Station createEndStation(String nameOfLine,
+                                    String nameOfStation,
+                                    Duration transferTimeFromPreviousStation,
+                                    Station availableStationForTransfer) {
+        //mock
+        return new Station(nameOfStation);
     }
 
     private boolean isNameOfStationUnique(String nameOfStation) {
