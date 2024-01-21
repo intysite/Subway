@@ -48,16 +48,19 @@ public class Subway {
                                     String nameOfStation,
                                     Duration transferTimeFromPreviousStation,
                                     Station availableStationForTransfer) throws FailedCreateStationException {
+
+        Station lastStation = getLineByColor(lineColor).getStations().getLast();
+
         if(isContainLineDesiredColor(lineColor)
         && !getLineByColor(lineColor).getStations().isEmpty()
-        && getLineByColor(lineColor).getStations().getLast().getNextStation() == null
+        && lastStation.getNextStation() == null
         && !transferTimeFromPreviousStation.isNegative()
         && !transferTimeFromPreviousStation.isZero()
         && isNameOfStationUnique(nameOfStation)) {
             Station station = new Station(nameOfStation);
             station.setLine(getLineByColor(lineColor));
-            station.setPreviousStation(getLineByColor(lineColor).getStations().getLast());
-            getLineByColor(lineColor).getStations().getLast().setTimeToNextStation(transferTimeFromPreviousStation);
+            station.setPreviousStation(lastStation);
+            lastStation.setTimeToNextStation(transferTimeFromPreviousStation);
 
             if(availableStationForTransfer != null) {
                 station.setTransferStation(availableStationForTransfer);
