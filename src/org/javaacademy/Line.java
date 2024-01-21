@@ -1,11 +1,11 @@
 package org.javaacademy;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class Line {
     private final String color;
-    private final List<Station> stations = new ArrayList<>();
+    private final LinkedList<Station> stations = new LinkedList<>();
     private final Subway subway;
 
     public Line(String color, Subway subway) {
@@ -17,7 +17,7 @@ public class Line {
         return color;
     }
 
-    public List<Station> getStations() {
+    public LinkedList<Station> getStations() {
         return stations;
     }
 }

@@ -44,12 +44,29 @@ public class Subway {
         }
     }
 
-    public Station createEndStation(String nameOfLine,
+    public Station createEndStation(String lineColor,
                                     String nameOfStation,
                                     Duration transferTimeFromPreviousStation,
-                                    Station availableStationForTransfer) {
-        //mock
-        return new Station(nameOfStation);
+                                    Station availableStationForTransfer) throws FailedCreateStationException {
+        if(isContainLineDesiredColor(lineColor)
+        && !getLineByColor(lineColor).getStations().isEmpty()
+        && getLineByColor(lineColor).getStations().getLast().getNextStation() == null
+        && !transferTimeFromPreviousStation.isNegative()
+        && !transferTimeFromPreviousStation.isZero()
+        && isNameOfStationUnique(nameOfStation)) {
+            Station station = new Station(nameOfStation);
+            station.setLine(getLineByColor(lineColor));
+            station.setPreviousStation(getLineByColor(lineColor).getStations().getLast());
+            getLineByColor(lineColor).getStations().getLast().setTimeToNextStation(transferTimeFromPreviousStation);
+
+            if(availableStationForTransfer != null) {
+                station.setTransferStation(availableStationForTransfer);
+            }
+
+            return station;
+        } else {
+            throw new FailedCreateStationException("Не удалось создать станцию " + nameOfStation);
+        }
     }
 
     private boolean isNameOfStationUnique(String nameOfStation) {
@@ -67,5 +84,12 @@ public class Subway {
         return lines.stream()
                 .filter(line -> line.getColor().equals(color))
                 .allMatch(line -> line.getStations().isEmpty());
+    }
+
+    private Line getLineByColor(String lineColor) {
+        return lines.stream()
+                .filter(line -> line.getColor().equals(lineColor))
+                .findFirst()
+                .get();
     }
 }
