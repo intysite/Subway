@@ -63,7 +63,7 @@ public class Subway {
             lastStation.setTimeToNextStation(transferTimeFromPreviousStation);
 
             if(availableStationForTransfer != null) {
-                station.setTransferStation(availableStationForTransfer);
+                station.setChangeLines(availableStationForTransfer.getLine().getColor());
             }
 
             return station;

@@ -6,7 +6,7 @@ public class Station {
     private String name;
     private Station previousStation;
     private Station nextStation;
-    private Station transferStation;
+    private String changeLines;
     private Duration timeToNextStation;
     private Line line;
     private Subway subway;
@@ -39,12 +39,12 @@ public class Station {
         this.nextStation = nextStation;
     }
 
-    public Station getTransferStation() {
-        return transferStation;
+    public String getChangeLines() {
+        return changeLines;
     }
 
-    public void setTransferStation(Station transferStation) {
-        this.transferStation = transferStation;
+    public void setChangeLines(String changeLines) {
+        this.changeLines = changeLines;
     }
 
     public Duration getTimeToNextStation() {
