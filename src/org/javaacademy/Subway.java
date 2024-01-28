@@ -38,7 +38,7 @@ public class Subway {
         if(!isNameOfStationUnique(nameOfStation)
             && isContainLineDesiredColor(lineColor)
             && isLineEmpty(lineColor)) {
-                return new Station(nameOfStation);
+            return createStation(lineColor, nameOfStation);
         } else {
             throw new FailedCreateStationException("Не удалось создать станцию " + nameOfStation);
         }
@@ -57,9 +57,9 @@ public class Subway {
         && !transferTimeFromPreviousStation.isNegative()
         && !transferTimeFromPreviousStation.isZero()
         && isNameOfStationUnique(nameOfStation)) {
-            Station station = new Station(nameOfStation);
-            station.setLine(getLineByColor(lineColor));
+            Station station = createStation(lineColor, nameOfStation);
             station.setPreviousStation(lastStation);
+            lastStation.setNextStation(station);
             lastStation.setTimeToNextStation(transferTimeFromPreviousStation);
 
             if(availableStationForTransfer != null) {
@@ -70,6 +70,13 @@ public class Subway {
         } else {
             throw new FailedCreateStationException("Не удалось создать станцию " + nameOfStation);
         }
+    }
+
+    private Station createStation(String lineColor, String nameOfStation) {
+        Station station = new Station(nameOfStation);
+        station.setLine(getLineByColor(lineColor));
+        getLineByColor(lineColor).addStation(station);
+        return station;
     }
 
     private boolean isNameOfStationUnique(String nameOfStation) {
