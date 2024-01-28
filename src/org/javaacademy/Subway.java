@@ -51,12 +51,9 @@ public class Subway {
 
         Station lastStation = getLineByColor(lineColor).getStations().getLast();
 
-        if(isContainLineDesiredColor(lineColor)
-        && !getLineByColor(lineColor).getStations().isEmpty()
-        && lastStation.getNextStation() == null
-        && !transferTimeFromPreviousStation.isNegative()
-        && !transferTimeFromPreviousStation.isZero()
-        && isNameOfStationUnique(nameOfStation)) {
+        if(lastStation.getNextStation() == null
+        && checkStatesToCreateStation(lineColor, nameOfStation, transferTimeFromPreviousStation)) {
+
             Station station = createStation(lineColor, nameOfStation);
             station.setPreviousStation(lastStation);
             lastStation.setNextStation(station);
@@ -77,6 +74,16 @@ public class Subway {
         station.setLine(getLineByColor(lineColor));
         getLineByColor(lineColor).addStation(station);
         return station;
+    }
+
+    private boolean checkStatesToCreateStation(String lineColor,
+                                               String nameOfStation,
+                                               Duration transferTimeFromPreviousStation) {
+        return isContainLineDesiredColor(lineColor)
+                && !getLineByColor(lineColor).getStations().isEmpty()
+                && !transferTimeFromPreviousStation.isNegative()
+                && !transferTimeFromPreviousStation.isZero()
+                && isNameOfStationUnique(nameOfStation);
     }
 
     private boolean isNameOfStationUnique(String nameOfStation) {
