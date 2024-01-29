@@ -33,11 +33,11 @@ public class Subway {
                 .noneMatch(line -> line.getColor().equals(color));
     }
 
-    public Station createFirstStation(String lineColor, String nameOfStation) throws FailedCreateStationException {
+    public void createFirstStation(String lineColor, String nameOfStation) throws FailedCreateStationException {
         if(!isNameOfStationUnique(nameOfStation)
             && isContainLineDesiredColor(lineColor)
             && isLineEmpty(lineColor)) {
-            return createStation(lineColor, nameOfStation);
+            createStation(lineColor, nameOfStation);
         } else {
             throw new FailedCreateStationException("Не удалось создать станцию " + nameOfStation);
         }
