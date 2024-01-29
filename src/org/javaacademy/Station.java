@@ -62,4 +62,9 @@ public class Station {
     public void setLine(Line line) {
         this.line = line;
     }
+
+    @Override
+    public String toString() {
+        return "Station{name=\'" + name + "\', changeLines=" + changeLines + "}";
+    }
 }

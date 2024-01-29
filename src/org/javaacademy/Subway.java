@@ -19,11 +19,10 @@ public class Subway {
         return lines;
     }
 
-    public Line createNewLine(String color) throws DuplicateLineColorException {
+    public void createNewLine(String color) throws DuplicateLineColorException {
         if (isColorUnique(color)) {
             Line line = new Line(color, this);
             lines.add(line);
-            return line;
         } else {
             throw new DuplicateLineColorException("Линия с цветом " + color + " уже существует.");
         }
@@ -108,5 +107,10 @@ public class Subway {
                 .filter(line -> line.getColor().equals(lineColor))
                 .findFirst()
                 .get();
+    }
+
+    @Override
+    public String toString() {
+        return "Metro{city=\'" + city + "\', lines=" + lines + "}";
     }
 }

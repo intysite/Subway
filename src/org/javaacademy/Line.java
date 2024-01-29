@@ -1,7 +1,6 @@
 package org.javaacademy;
 
 import java.util.LinkedList;
-import java.util.List;
 
 public class Line {
     private final String color;
@@ -23,5 +22,10 @@ public class Line {
 
     public void addStation(Station station) {
         stations.add(station);
+    }
+
+    @Override
+    public String toString() {
+        return "Line{color=\'" + color + "\', stations=" + stations + "}";
     }
 }
