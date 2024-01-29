@@ -43,7 +43,7 @@ public class Subway {
         }
     }
 
-    public Station createEndStation(String lineColor,
+    public void createEndStation(String lineColor,
                                     String nameOfStation,
                                     Duration transferTimeFromPreviousStation,
                                     Station availableStationForTransfer) throws FailedCreateStationException {
@@ -62,7 +62,6 @@ public class Subway {
                 station.setChangeLines(availableStationForTransfer.getLine().getColor());
             }
 
-            return station;
         } else {
             throw new FailedCreateStationException("Не удалось создать станцию " + nameOfStation);
         }
@@ -105,6 +104,13 @@ public class Subway {
     private Line getLineByColor(String lineColor) {
         return lines.stream()
                 .filter(line -> line.getColor().equals(lineColor))
+                .findFirst()
+                .get();
+    }
+
+    private Station defineTransferStation(Line startLine, Line destinationLine) {
+        return startLine.getStations().stream()
+                .filter(l -> l.getChangeLines().equals(destinationLine.getColor()))
                 .findFirst()
                 .get();
     }
