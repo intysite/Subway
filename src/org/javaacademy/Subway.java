@@ -2,6 +2,8 @@ package org.javaacademy;
 
 import java.time.Duration;
 import java.util.HashSet;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 public class Subway {
     private final String city;
@@ -115,7 +117,24 @@ public class Subway {
                 .get();
     }
 
+    private int countNumberOfStages(Station startStation, Station destinationStation) {
+        Stream<Station> stream = startStation.getLine().getStations().stream();
+        long countStations = stream
+                .filter(station -> station.equals(startStation) || station.equals(destinationStation))
+                .count();
 
+        if(countStations != 2) {
+            return -1;
+        }
+
+        long countBetweenStations = stream
+                .dropWhile(station -> !station.equals(startStation))
+                .skip(1)
+                .takeWhile(station -> !station.equals(destinationStation))
+                .count();
+
+        return (int) countStations;
+    }
 
     @Override
     public String toString() {
