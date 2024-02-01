@@ -1,7 +1,9 @@
 package org.javaacademy;
 
 import java.time.Duration;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -117,8 +119,29 @@ public class Subway {
                 .get();
     }
 
-    private int countNumberOfStages(Station startStation, Station destinationStation) {
+    private int countNumberOfStagesByNextStations(Station startStation, Station destinationStation) {
         Stream<Station> stream = startStation.getLine().getStations().stream();
+        long countStations = stream
+                .filter(station -> station.equals(startStation) || station.equals(destinationStation))
+                .count();
+
+        if(countStations != 2) {
+            return -1;
+        }
+
+        long countBetweenStations = stream
+                .dropWhile(station -> !station.equals(startStation))
+                .skip(1)
+                .takeWhile(station -> !station.equals(destinationStation))
+                .count();
+
+        return (int) countStations;
+    }
+
+    private int countNumberOfStagesByPreviousStations(Station startStation, Station destinationStation) {
+        LinkedList<Station> stations = startStation.getLine().getStations();
+        Collections.reverse(stations);
+        Stream<Station> stream = stations.stream();
         long countStations = stream
                 .filter(station -> station.equals(startStation) || station.equals(destinationStation))
                 .count();
