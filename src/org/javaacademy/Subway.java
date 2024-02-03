@@ -38,7 +38,7 @@ public class Subway {
     }
 
     public void createFirstStation(String lineColor, String nameOfStation) throws FailedCreateStationException {
-        if(!isNameOfStationUnique(nameOfStation)
+        if(isNameOfStationUnique(nameOfStation)
             && isContainLineDesiredColor(lineColor)
             && isLineEmpty(lineColor)) {
             createStation(lineColor, nameOfStation);
@@ -91,7 +91,7 @@ public class Subway {
     private boolean isNameOfStationUnique(String nameOfStation) {
         return lines.stream()
                 .flatMap(line -> line.getStations().stream())
-                .anyMatch(s -> s.getName().equals(nameOfStation));
+                .noneMatch(s -> s.getName().equals(nameOfStation));
     }
 
     private boolean isContainLineDesiredColor(String color) {
@@ -119,30 +119,23 @@ public class Subway {
                 .get();
     }
 
-    private int countNumberOfStagesByNextStations(Station startStation, Station destinationStation) {
-        Stream<Station> stream = startStation.getLine().getStations().stream();
-        long countStations = stream
-                .filter(station -> station.equals(startStation) || station.equals(destinationStation))
-                .count();
+    public int countNumberOfStages(Station startStation, Station destinationStation) {
 
-        if(countStations != 2) {
-            return -1;
+        LinkedList<Station> stations = startStation.getLine().getStations();
+        int count = countNumberOfStagesByNextStations(startStation, destinationStation, stations);
+        if(count > 0) {
+            return count;
+        } else {
+            Collections.reverse(stations);
+            count = countNumberOfStagesByNextStations(startStation, destinationStation, stations);
+            return count;
         }
-
-        long countBetweenStations = stream
-                .dropWhile(station -> !station.equals(startStation))
-                .skip(1)
-                .takeWhile(station -> !station.equals(destinationStation))
-                .count();
-
-        return (int) countStations;
     }
 
-    private int countNumberOfStagesByPreviousStations(Station startStation, Station destinationStation) {
-        LinkedList<Station> stations = startStation.getLine().getStations();
-        Collections.reverse(stations);
-        Stream<Station> stream = stations.stream();
-        long countStations = stream
+    private int countNumberOfStagesByNextStations(Station startStation,
+                                                  Station destinationStation,
+                                                  LinkedList<Station> stations) {
+        long countStations = stations.stream()
                 .filter(station -> station.equals(startStation) || station.equals(destinationStation))
                 .count();
 
@@ -150,13 +143,12 @@ public class Subway {
             return -1;
         }
 
-        long countBetweenStations = stream
+        long countBetweenStations = stations.stream()
                 .dropWhile(station -> !station.equals(startStation))
-                .skip(1)
                 .takeWhile(station -> !station.equals(destinationStation))
                 .count();
 
-        return (int) countStations;
+        return (int) countBetweenStations;
     }
 
     @Override
