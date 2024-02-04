@@ -120,13 +120,20 @@ public class Subway {
     public int countNumberOfStages(Station startStation, Station destinationStation) {
 
         LinkedList<Station> stations = startStation.getLine().getStations();
-        int count = countNumberOfStagesByNextStations(startStation, destinationStation, stations);
-        if(count > 0) {
-            return count;
+
+        long countStations = stations.stream()
+                .filter(station -> station.equals(startStation) || station.equals(destinationStation))
+                .count();
+
+        if(countStations != 2) {
+            return -1;
+        }
+
+        if(stations.indexOf(startStation) < stations.indexOf(destinationStation)) {
+            return countNumberOfStagesByNextStations(startStation, destinationStation, stations);
         } else {
             Collections.reverse(stations);
-            count = countNumberOfStagesByNextStations(startStation, destinationStation, stations);
-            return count;
+            return countNumberOfStagesByNextStations(startStation, destinationStation, stations);
         }
     }
 
@@ -135,14 +142,6 @@ public class Subway {
                                                   LinkedList<Station> stations) {
         if(startStation.equals(destinationStation)) {
             return 0;
-        }
-
-        long countStations = stations.stream()
-                .filter(station -> station.equals(startStation) || station.equals(destinationStation))
-                .count();
-
-        if(countStations != 2) {
-            return -1;
         }
 
         long countBetweenStations = stations.stream()
