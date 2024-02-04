@@ -4,8 +4,6 @@ import java.time.Duration;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
-import java.util.Optional;
-import java.util.stream.Stream;
 
 public class Subway {
     private final String city;
@@ -135,6 +133,10 @@ public class Subway {
     private int countNumberOfStagesByNextStations(Station startStation,
                                                   Station destinationStation,
                                                   LinkedList<Station> stations) {
+        if(startStation.equals(destinationStation)) {
+            return 0;
+        }
+
         long countStations = stations.stream()
                 .filter(station -> station.equals(startStation) || station.equals(destinationStation))
                 .count();

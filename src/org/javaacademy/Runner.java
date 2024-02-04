@@ -35,7 +35,7 @@ public class Runner {
         Station endStation = subway.getLines().stream()
                 .filter(l -> l.getColor().equals("Красная"))
                 .flatMap(l -> l.getStations().stream())
-                .filter(s -> s.getName().equals("Молодежная"))
+                .filter(s -> s.getName().equals("Спортивная"))
                 .findFirst()
                 .get();
 
