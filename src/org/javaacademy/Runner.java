@@ -39,6 +39,6 @@ public class Runner {
                 .findFirst()
                 .get();
 
-        System.out.println(subway.countNumberOfStages(startStation, endStation));
+
     }
 }

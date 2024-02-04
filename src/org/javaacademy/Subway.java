@@ -1,5 +1,9 @@
 package org.javaacademy;
 
+import org.javaacademy.exceptions.DuplicateLineColorException;
+import org.javaacademy.exceptions.FailedCreateStationException;
+import org.javaacademy.exceptions.NoWayException;
+
 import java.time.Duration;
 import java.util.Collections;
 import java.util.HashSet;
@@ -63,7 +67,6 @@ public class Subway {
             if(availableStationForTransfer != null) {
                 station.setChangeLines(availableStationForTransfer.getLine().getColor());
             }
-
         } else {
             throw new FailedCreateStationException("Не удалось создать станцию " + nameOfStation);
         }
@@ -117,7 +120,7 @@ public class Subway {
                 .get();
     }
 
-    public int countNumberOfStages(Station startStation, Station destinationStation) {
+    private int countNumberOfStages(Station startStation, Station destinationStation) throws NoWayException {
 
         LinkedList<Station> stations = startStation.getLine().getStations();
 
@@ -126,24 +129,19 @@ public class Subway {
                 .count();
 
         if(countStations != 2) {
-            return -1;
+            throw new NoWayException("Нет пути между станциями " + startStation.getName()
+                                      + "и " + destinationStation.getName());
         }
 
-        if(stations.indexOf(startStation) < stations.indexOf(destinationStation)) {
-            return countNumberOfStagesByNextStations(startStation, destinationStation, stations);
-        } else {
+        if (stations.indexOf(startStation) > stations.indexOf(destinationStation)) {
             Collections.reverse(stations);
-            return countNumberOfStagesByNextStations(startStation, destinationStation, stations);
         }
+        return countNumberOfStagesByNextStations(startStation, destinationStation, stations);
     }
 
     private int countNumberOfStagesByNextStations(Station startStation,
                                                   Station destinationStation,
                                                   LinkedList<Station> stations) {
-        if(startStation.equals(destinationStation)) {
-            return 0;
-        }
-
         long countBetweenStations = stations.stream()
                 .dropWhile(station -> !station.equals(startStation))
                 .takeWhile(station -> !station.equals(destinationStation))
