@@ -120,7 +120,7 @@ public class Subway {
                 .get();
     }
 
-    private int countNumberOfStages(Station startStation, Station destinationStation) throws NoWayException {
+    private int countNumberOfStagesSameLine(Station startStation, Station destinationStation) throws NoWayException {
 
         LinkedList<Station> stations = startStation.getLine().getStations();
 
@@ -148,6 +148,18 @@ public class Subway {
                 .count();
 
         return (int) countBetweenStations;
+    }
+
+    public int countNumberOfStages(Station startStation, Station destinationStation) throws NoWayException {
+        if(startStation.getLine().equals(destinationStation.getLine())) {
+            return countNumberOfStagesSameLine(startStation, destinationStation);
+        } else{
+            Station transferStation = defineTransferStation(startStation.getLine(), destinationStation.getLine());
+            Station appropriateTransferStation = defineTransferStation(destinationStation.getLine(), startStation.getLine());
+
+            return countNumberOfStagesSameLine(startStation, transferStation) +
+                    countNumberOfStagesSameLine(appropriateTransferStation, destinationStation);
+        }
     }
 
     @Override
