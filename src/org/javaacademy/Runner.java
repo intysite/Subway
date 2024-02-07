@@ -24,7 +24,7 @@ public class Runner {
             subway.createEndStation("Синяя", "Тяжмаш", Duration.ofMinutes(1).plusSeconds(47), "Красная");
             subway.createEndStation("Синяя", "Нижнекамская", Duration.ofMinutes(3).plusSeconds(19), null);
             subway.createEndStation("Синяя", "Соборная", Duration.ofMinutes(1).plusSeconds(48), null);
-            Station station = subway.findStationByName("Медведковская");
+            Station station = subway.getStationByName("Медведковская");
             station.sellTicket(LocalDate.now(), "Медведковская", "Нижнекамская");
             station.sellTicket(LocalDate.now(), "Медведковская", "Нижнекамская");
             System.out.println(station.getTicketOffice());

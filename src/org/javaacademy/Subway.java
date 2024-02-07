@@ -156,7 +156,7 @@ public class Subway {
         return (int) countBetweenStations;
     }
 
-    public Station findStationByName(String nameOfStation) {
+    public Station getStationByName(String nameOfStation) {
         return lines.stream()
                 .flatMap(line -> line.getStations().stream())
                 .filter(station -> station.getName().equals(nameOfStation))
@@ -165,8 +165,8 @@ public class Subway {
     }
 
     public int countNumberOfStages(String nameOfStartStation, String nameOfDestinationStation) throws NoWayException {
-        Station startStation = findStationByName(nameOfStartStation);
-        Station destinationStation = findStationByName(nameOfDestinationStation);
+        Station startStation = getStationByName(nameOfStartStation);
+        Station destinationStation = getStationByName(nameOfDestinationStation);
         if(startStation.getLine().equals(destinationStation.getLine())) {
             return countNumberOfStagesSameLine(startStation, destinationStation);
         } else{
