@@ -1,6 +1,7 @@
 package org.javaacademy;
 
 import java.time.Duration;
+import java.util.Optional;
 
 public class Station {
     private String name;
@@ -39,8 +40,8 @@ public class Station {
         this.nextStation = nextStation;
     }
 
-    public String getChangeLines() {
-        return changeLines;
+    public Optional<String> getChangeLines() {
+        return Optional.ofNullable(changeLines);
     }
 
     public void setChangeLines(String changeLines) {

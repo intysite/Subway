@@ -52,7 +52,7 @@ public class Subway {
     public void createEndStation(String lineColor,
                                     String nameOfStation,
                                     Duration transferTimeFromPreviousStation,
-                                    Station availableStationForTransfer) throws FailedCreateStationException {
+                                    String availableLineForTransfer) throws FailedCreateStationException {
 
         Station lastStation = getLineByColor(lineColor).getStations().getLast();
 
@@ -64,8 +64,8 @@ public class Subway {
             lastStation.setNextStation(station);
             lastStation.setTimeToNextStation(transferTimeFromPreviousStation);
 
-            if(availableStationForTransfer != null) {
-                station.setChangeLines(availableStationForTransfer.getLine().getColor());
+            if(availableLineForTransfer != null) {
+                station.setChangeLines(availableLineForTransfer);
             }
         } else {
             throw new FailedCreateStationException("Не удалось создать станцию " + nameOfStation);
@@ -115,12 +115,16 @@ public class Subway {
 
     private Station defineTransferStation(Line startLine, Line destinationLine) {
         return startLine.getStations().stream()
-                .filter(l -> l.getChangeLines().equals(destinationLine.getColor()))
+                .filter(s -> s.getChangeLines().isPresent())
                 .findFirst()
                 .get();
     }
 
     private int countNumberOfStagesSameLine(Station startStation, Station destinationStation) throws NoWayException {
+
+        if(startStation.equals(destinationStation)) {
+            return 0;
+        }
 
         LinkedList<Station> stations = startStation.getLine().getStations();
 
@@ -130,7 +134,7 @@ public class Subway {
 
         if(countStations != 2) {
             throw new NoWayException("Нет пути между станциями " + startStation.getName()
-                                      + "и " + destinationStation.getName());
+                                      + " и " + destinationStation.getName());
         }
 
         if (stations.indexOf(startStation) > stations.indexOf(destinationStation)) {
