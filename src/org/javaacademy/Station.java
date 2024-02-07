@@ -15,7 +15,8 @@ public class Station {
     private Duration timeToNextStation;
     private Line line;
     private Subway subway;
-    private HashMap<LocalDate, Integer> ticketOffice = new HashMap<>();
+    private final HashMap<LocalDate, Integer> ticketOffice = new HashMap<>();
+    private final Integer PRICE_OF_MONTHLY_PASS = 3000;
 
     public Station(String name) {
         this.name = name;
@@ -23,12 +24,24 @@ public class Station {
 
     public void sellTicket(LocalDate dateOfPurchase, String startStation, String destinationStation) throws NoWayException {
         Integer ticketPrice = subway.countNumberOfStages(startStation, destinationStation) * 5 + 20;
+        putMoneyInTicketOffice(dateOfPurchase, ticketPrice);
+    }
 
+    public void sellMonthlyPass(LocalDate dateOfPurchase) {
+        putMoneyInTicketOffice(dateOfPurchase, PRICE_OF_MONTHLY_PASS);
+        subway.addMonthlyPass(dateOfPurchase);
+    }
+
+    public void renewMonthlyPass(String numberOfPass, LocalDate dateOfPurchase) {
+        putMoneyInTicketOffice(dateOfPurchase, PRICE_OF_MONTHLY_PASS);
+        subway.renewMonthlyPass(numberOfPass, dateOfPurchase);
+    }
+
+    private void putMoneyInTicketOffice(LocalDate dateOfPurchase, Integer money) {
         if(ticketOffice.containsKey(dateOfPurchase)) {
-            ticketPrice += ticketOffice.get(dateOfPurchase);
+            money += ticketOffice.get(dateOfPurchase);
         }
-
-        ticketOffice.put(dateOfPurchase, ticketPrice);
+        ticketOffice.put(dateOfPurchase, money);
     }
 
     public String getName() {

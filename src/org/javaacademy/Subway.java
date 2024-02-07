@@ -5,13 +5,14 @@ import org.javaacademy.exceptions.FailedCreateStationException;
 import org.javaacademy.exceptions.NoWayException;
 
 import java.time.Duration;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedList;
+import java.time.LocalDate;
+import java.util.*;
 
 public class Subway {
     private final String city;
     private final HashSet<Line> lines = new HashSet<>();
+    private final HashMap<String, LocalDate> monthlyPasses = new HashMap<>();
+    private int numberOfLastPass = 0;
 
     public Subway(String city) {
         this.city = city;
@@ -175,6 +176,39 @@ public class Subway {
             return countNumberOfStagesSameLine(startStation, transferStation) +
                     countNumberOfStagesSameLine(appropriateTransferStation, destinationStation);
         }
+    }
+
+    public void addMonthlyPass(LocalDate dateOfPurchase) {
+        numberOfLastPass++;
+        if (numberOfLastPass > 9999) {
+            numberOfLastPass = 0;
+        }
+        String formattedNumber = "a" + String.format("%04d", numberOfLastPass);
+        monthlyPasses.put(formattedNumber, setDateInMonth(dateOfPurchase));
+    }
+
+    public boolean isValidMonthlyPass(String numberOfPass, LocalDate checkDate) {
+        return checkDate.isBefore(monthlyPasses.get(numberOfPass));
+    }
+
+    public void renewMonthlyPass(String numberOfPass, LocalDate dateOfPurchase) {
+        monthlyPasses.put(numberOfPass, setDateInMonth(dateOfPurchase));
+    }
+
+    private LocalDate setDateInMonth (LocalDate date) {
+        int year = date.getYear();
+        int month = date.getMonthValue();
+        month++;
+        if (month == 13) {
+            month = 1;
+            year++;
+        }
+        int dayOfMonth = date.getDayOfMonth();
+        int daysInNextMonth = java.time.YearMonth.of(year, month).lengthOfMonth();
+        if (dayOfMonth > daysInNextMonth) {
+            dayOfMonth = daysInNextMonth;
+        }
+        return LocalDate.of(year, month, dayOfMonth);
     }
 
     @Override
