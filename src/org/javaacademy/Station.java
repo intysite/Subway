@@ -1,6 +1,10 @@
 package org.javaacademy;
 
+import org.javaacademy.exceptions.NoWayException;
+
 import java.time.Duration;
+import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.Optional;
 
 public class Station {
@@ -11,9 +15,20 @@ public class Station {
     private Duration timeToNextStation;
     private Line line;
     private Subway subway;
+    private HashMap<LocalDate, Integer> ticketOffice = new HashMap<>();
 
     public Station(String name) {
         this.name = name;
+    }
+
+    public void sellTicket(LocalDate dateOfPurchase, String startStation, String destinationStation) throws NoWayException {
+        Integer ticketPrice = subway.countNumberOfStages(startStation, destinationStation) * 5 + 20;
+
+        if(ticketOffice.containsKey(dateOfPurchase)) {
+            ticketPrice += ticketOffice.get(dateOfPurchase);
+        }
+
+        ticketOffice.put(dateOfPurchase, ticketPrice);
     }
 
     public String getName() {
@@ -62,6 +77,14 @@ public class Station {
 
     public void setLine(Line line) {
         this.line = line;
+    }
+
+    public HashMap<LocalDate, Integer> getTicketOffice() {
+        return ticketOffice;
+    }
+
+    public void setSubway(Subway subway) {
+        this.subway = subway;
     }
 
     @Override

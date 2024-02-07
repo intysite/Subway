@@ -3,6 +3,7 @@ package org.javaacademy;
 import org.javaacademy.exceptions.NoWayException;
 
 import java.time.Duration;
+import java.time.LocalDate;
 
 public class Runner {
     public static void main(String[] args) throws NoWayException {
@@ -23,24 +24,14 @@ public class Runner {
             subway.createEndStation("Синяя", "Тяжмаш", Duration.ofMinutes(1).plusSeconds(47), "Красная");
             subway.createEndStation("Синяя", "Нижнекамская", Duration.ofMinutes(3).plusSeconds(19), null);
             subway.createEndStation("Синяя", "Соборная", Duration.ofMinutes(1).plusSeconds(48), null);
+            Station station = subway.findStationByName("Медведковская");
+            station.sellTicket(LocalDate.now(), "Медведковская", "Нижнекамская");
+            station.sellTicket(LocalDate.now(), "Медведковская", "Нижнекамская");
+            System.out.println(station.getTicketOffice());
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
 
-        Station startStation = subway.getLines().stream()
-                .filter(l -> l.getColor().equals("Красная"))
-                .flatMap(l -> l.getStations().stream())
-                .filter(s -> s.getName().equals("Спортивная"))
-                .findFirst()
-                .get();
-
-        Station endStation = subway.getLines().stream()
-                .filter(l -> l.getColor().equals("Синяя"))
-                .flatMap(l -> l.getStations().stream())
-                .filter(s -> s.getName().equals("Тяжмаш"))
-                .findFirst()
-                .get();
-
-        System.out.println(subway.countNumberOfStages(startStation, endStation));
+        //System.out.println(subway.countNumberOfStages("Спортивная", "Нижнекамская"));
     }
 }

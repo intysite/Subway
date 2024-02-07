@@ -76,6 +76,7 @@ public class Subway {
         Station station = new Station(nameOfStation);
         station.setLine(getLineByColor(lineColor));
         getLineByColor(lineColor).addStation(station);
+        station.setSubway(this);
         return station;
     }
 
@@ -154,7 +155,17 @@ public class Subway {
         return (int) countBetweenStations;
     }
 
-    public int countNumberOfStages(Station startStation, Station destinationStation) throws NoWayException {
+    public Station findStationByName(String nameOfStation) {
+        return lines.stream()
+                .flatMap(line -> line.getStations().stream())
+                .filter(station -> station.getName().equals(nameOfStation))
+                .findFirst()
+                .get();
+    }
+
+    public int countNumberOfStages(String nameOfStartStation, String nameOfDestinationStation) throws NoWayException {
+        Station startStation = findStationByName(nameOfStartStation);
+        Station destinationStation = findStationByName(nameOfDestinationStation);
         if(startStation.getLine().equals(destinationStation.getLine())) {
             return countNumberOfStagesSameLine(startStation, destinationStation);
         } else{
