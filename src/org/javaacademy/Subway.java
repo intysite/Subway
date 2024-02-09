@@ -18,14 +18,6 @@ public class Subway {
         this.city = city;
     }
 
-    public String getCity() {
-        return city;
-    }
-
-    public HashSet<Line> getLines() {
-        return lines;
-    }
-
     public void createNewLine(String color) throws DuplicateLineColorException {
         if (isColorUnique(color)) {
             Line line = new Line(color, this);
