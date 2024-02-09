@@ -211,6 +211,20 @@ public class Subway {
         return LocalDate.of(year, month, dayOfMonth);
     }
 
+    public void showAllIncome() {
+        Map<LocalDate, Integer> sumByDate = lines.stream()
+                .flatMap(line -> line.getStations().stream())
+                .flatMap(station -> station.getTicketOffice().entrySet().stream())
+                .collect(
+                        HashMap::new,
+                        (result, entry) -> result.merge(entry.getKey(), entry.getValue(), Integer::sum),
+                        HashMap::putAll
+                );
+
+        sumByDate.forEach((date, sum) -> System.out.println(date + " - " + sum +
+                " (сумма доходов со всех касс за эту дату)"));
+    }
+
     @Override
     public String toString() {
         return "Metro{city=\'" + city + "\', lines=" + lines + "}";
