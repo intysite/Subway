@@ -10,8 +10,8 @@ import java.util.*;
 
 public class Subway {
     private final String city;
-    private final HashSet<Line> lines = new HashSet<>();
-    private final HashMap<String, LocalDate> monthlyPasses = new HashMap<>();
+    private final Set<Line> lines = new HashSet<>();
+    private final Map<String, LocalDate> monthlyPasses = new HashMap<>();
     private int numberOfLastPass = 0;
 
     public Subway(String city) {
@@ -104,14 +104,14 @@ public class Subway {
         return lines.stream()
                 .filter(line -> line.getColor().equals(lineColor))
                 .findFirst()
-                .get();
+                .orElseThrow();
     }
 
     private Station defineTransferStation(Line startLine, Line destinationLine) {
         return startLine.getStations().stream()
                 .filter(s -> s.getChangeLines().isPresent())
                 .findFirst()
-                .get();
+                .orElseThrow();
     }
 
     private int countNumberOfStagesSameLine(Station startStation, Station destinationStation) throws NoWayException {
@@ -127,8 +127,8 @@ public class Subway {
                 .count();
 
         if(countStations != 2) {
-            throw new NoWayException("Нет пути между станциями " + startStation.getName()
-                                      + " и " + destinationStation.getName());
+            throw new NoWayException(String.format("Нет пути между станциями %s и %s",
+                    startStation.getName(), destinationStation.getName()));
         }
 
         if (stations.indexOf(startStation) > stations.indexOf(destinationStation)) {
@@ -153,7 +153,7 @@ public class Subway {
                 .flatMap(line -> line.getStations().stream())
                 .filter(station -> station.getName().equals(nameOfStation))
                 .findFirst()
-                .get();
+                .orElseThrow();
     }
 
     public int countNumberOfStages(String nameOfStartStation, String nameOfDestinationStation) throws NoWayException {
@@ -161,13 +161,12 @@ public class Subway {
         Station destinationStation = getStationByName(nameOfDestinationStation);
         if(startStation.getLine().equals(destinationStation.getLine())) {
             return countNumberOfStagesSameLine(startStation, destinationStation);
-        } else{
-            Station transferStation = defineTransferStation(startStation.getLine(), destinationStation.getLine());
-            Station appropriateTransferStation = defineTransferStation(destinationStation.getLine(), startStation.getLine());
-
-            return countNumberOfStagesSameLine(startStation, transferStation) +
-                    countNumberOfStagesSameLine(appropriateTransferStation, destinationStation);
         }
+        Station transferStation = defineTransferStation(startStation.getLine(), destinationStation.getLine());
+        Station appropriateTransferStation = defineTransferStation(destinationStation.getLine(), startStation.getLine());
+
+        return countNumberOfStagesSameLine(startStation, transferStation) +
+                countNumberOfStagesSameLine(appropriateTransferStation, destinationStation);
     }
 
     public void addMonthlyPass(LocalDate dateOfPurchase) {
@@ -176,7 +175,7 @@ public class Subway {
             numberOfLastPass = 0;
         }
         String formattedNumber = "a" + String.format("%04d", numberOfLastPass);
-        monthlyPasses.put(formattedNumber, setDateInMonth(dateOfPurchase));
+        monthlyPasses.put(formattedNumber, dateOfPurchase.plusMonths(1));
     }
 
     public boolean isValidMonthlyPass(String numberOfPass, LocalDate checkDate) {
@@ -184,23 +183,7 @@ public class Subway {
     }
 
     public void renewMonthlyPass(String numberOfPass, LocalDate dateOfPurchase) {
-        monthlyPasses.put(numberOfPass, setDateInMonth(dateOfPurchase));
-    }
-
-    private LocalDate setDateInMonth (LocalDate date) {
-        int year = date.getYear();
-        int month = date.getMonthValue();
-        month++;
-        if (month == 13) {
-            month = 1;
-            year++;
-        }
-        int dayOfMonth = date.getDayOfMonth();
-        int daysInNextMonth = java.time.YearMonth.of(year, month).lengthOfMonth();
-        if (dayOfMonth > daysInNextMonth) {
-            dayOfMonth = daysInNextMonth;
-        }
-        return LocalDate.of(year, month, dayOfMonth);
+        monthlyPasses.put(numberOfPass, dateOfPurchase.plusMonths(1));
     }
 
     public void showAllIncome() {
@@ -208,9 +191,9 @@ public class Subway {
                 .flatMap(line -> line.getStations().stream())
                 .flatMap(station -> station.getTicketOffice().entrySet().stream())
                 .collect(
-                        HashMap::new,
+                        TreeMap::new,
                         (result, entry) -> result.merge(entry.getKey(), entry.getValue(), Integer::sum),
-                        HashMap::putAll
+                        TreeMap::putAll
                 );
 
         sumByDate.forEach((date, sum) -> System.out.println(date + " - " + sum +

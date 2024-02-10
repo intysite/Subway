@@ -38,10 +38,7 @@ public class Station {
     }
 
     private void putMoneyInTicketOffice(LocalDate dateOfPurchase, Integer money) {
-        if(ticketOffice.containsKey(dateOfPurchase)) {
-            money += ticketOffice.get(dateOfPurchase);
-        }
-        ticketOffice.put(dateOfPurchase, money);
+        ticketOffice.put(dateOfPurchase, ticketOffice.getOrDefault(dateOfPurchase, 0) + money);
     }
 
     public String getName() {
